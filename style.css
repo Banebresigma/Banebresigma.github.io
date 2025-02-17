@@ -108,3 +108,13 @@ button, select, input[type="number"] {
 button:hover, select:hover, input[type="number"]:hover {
     transform: scale(1.05);
 }
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #eaeaea;
+}
+
+body.dark-mode header {
+    background-color: #222;
+}
