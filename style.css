@@ -1,15 +1,14 @@
-/* General styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #121212; /* Dark background */
-    color: #eaeaea; /* Light text */
+    background-color: #121212;
+    color: #eaeaea;
     transition: background-color 0.3s, color 0.3s;
 }
 
 header {
-    background-color: #333; /* Dark header */
+    background-color: #333; 
     color: white;
     padding: 10px 20px;
     text-align: center;
@@ -22,12 +21,12 @@ h1, h2 {
 section {
     padding: 20px;
     margin: 10px;
-    background-color: #1e1e1e; /* Dark sections */
+    background-color: #1e1e1e; 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Table styles */
+
 table {
     width: 100%;
     margin-top: 10px;
@@ -37,11 +36,11 @@ table {
 th, td {
     padding: 10px;
     text-align: center;
-    border: 1px solid #444; /* Dark borders */
+    border: 1px solid #444;
 }
 
 th {
-    background-color: #444; /* Dark header in table */
+    background-color: #444;
     color: white;
 }
 
@@ -65,12 +64,10 @@ input[type="number"], select {
     border-radius: 5px;
 }
 
-/* Bet history */
 #betHistory tr td {
     text-align: center;
 }
 
-/* Styles for status selection */
 option[value="pending"] {
     color: gray;
 }
@@ -83,7 +80,6 @@ option[value="lost"] {
     color: red;
 }
 
-/* Dark mode toggle button */
 #darkModeToggle {
     position: fixed;
     top: 20px;
@@ -100,7 +96,6 @@ option[value="lost"] {
     background-color: #555;
 }
 
-/* Hover effects */
 button, select, input[type="number"] {
     transition: all 0.3s ease;
 }
