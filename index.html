@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kazino & Sportska Kladionica</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Kazino & Sportska Kladionica</h1>
+        <p>Saldo: <span id="balance">10000</span> din</p>
+    </header>
+
+    <section class="sports-betting">
+        <h2>Sportska Kladionica</h2>
+        <table>
+            <tr><th>Meč</th><th>1</th><th>X</th><th>2</th></tr>
+            <tr>
+                <td>Real Madrid - Barcelona</td>
+                <td><button onclick="addToBetslip('Real Madrid - Barcelona', 'Real Madrid', 2.50)">2.50</button></td>
+                <td><button onclick="addToBetslip('Real Madrid - Barcelona', 'Nerešeno', 3.10)">3.10</button></td>
+                <td><button onclick="addToBetslip('Real Madrid - Barcelona', 'Barcelona', 2.70)">2.70</button></td>
+            </tr>
+            <tr>
+                <td>Partizan - Zvezda</td>
+                <td><button onclick="addToBetslip('Partizan - Zvezda', 'Partizan', 2.30)">2.30</button></td>
+                <td><button onclick="addToBetslip('Partizan - Zvezda', 'Nerešeno', 3.20)">3.20</button></td>
+                <td><button onclick="addToBetslip('Partizan - Zvezda', 'Zvezda', 2.60)">2.60</button></td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="betslip">
+        <h2>BetSlip</h2>
+        <table id="betslip">
+            <tr><th>Meč</th><th>Tip</th><th>Kvota</th><th>Ukloni</th></tr>
+        </table>
+        <p>Ukupna kvota: <span id="totalOdds">1.00</span></p>
+        <label for="betAmount">Ulog (din):</label>
+        <input type="number" id="betAmount" min="1" value="100" oninput="updatePotentialWinnings()">
+        <p>Mogući dobitak: <span id="potentialWinnings">0</span> din</p>
+        <button onclick="placeBet()">Potvrdi tiket</button>
+    </section>
+
+    <section class="history">
+        <h2>Moje Opklade</h2>
+        <table id="betHistory">
+            <tr><th>Ulog</th><th>Mečevi</th><th>Status</th></tr>
+        </table>
+    </section>
+
+    <script>
+        let balance = 10000;
+        let betslip = [];
+
+        function updateBalance() {
+            document.getElementById("balance").innerText = balance;
+        }
+
+        function addToBetslip(match, team, odds) {
+            if (betslip.some(bet => bet.match === match)) {
+                alert("Već si dodao opkladu za ovaj meč!");
+                return;
+            }
+            betslip.push({ match, team, odds });
+            updateBetslip();
+        }
+
+        function updateBetslip() {
+            let betslipElement = document.getElementById("betslip");
+            betslipElement.innerHTML = "<tr><th>Meč</th><th>Tip</th><th>Kvota</th><th>Ukloni</th></tr>";
+            let totalOdds = 1;
+            betslip.forEach((bet, index) => {
+                totalOdds *= bet.odds;
+                let row = `<tr><td>${bet.match}</td><td>${bet.team}</td><td>${bet.odds}</td><td><button onclick="removeFromBetslip(${index})">❌</button></td></tr>`;
+                betslipElement.innerHTML += row;
+            });
+            document.getElementById("totalOdds").innerText = totalOdds.toFixed(2);
+            updatePotentialWinnings();
+        }
+
+        function removeFromBetslip(index) {
+            betslip.splice(index, 1);
+            updateBetslip();
+        }
+
+        function updatePotentialWinnings() {
+            let betAmount = parseInt(document.getElementById("betAmount").value);
+            let totalOdds = parseFloat(document.getElementById("totalOdds").innerText);
+            let potentialWinnings = betAmount * totalOdds;
+            document.getElementById("potentialWinnings").innerText = potentialWinnings.toFixed(2);
+        }
+
+        function placeBet() {
+            let betAmount = parseInt(document.getElementById("betAmount").value);
+            if (betAmount > balance || betAmount <= 0) {
+                alert("Nedovoljno sredstava ili neispravan iznos!");
+                return;
+            }
+            balance -= betAmount;
+            updateBalance();
+            
+            let historyElement = document.getElementById("betHistory");
+            let row = `<tr><td>${betAmount} din</td><td>${betslip.map(b => `${b.team} @ ${b.odds}`).join(", ")}</td><td><select onchange='updateBetStatus(this)'><option value='pending'>Na čekanju</option><option value='won'>Dobitna</option><option value='lost'>Izgubljena</option></select></td></tr>`;
+            historyElement.innerHTML += row;
+            
+            betslip = [];
+            updateBetslip();
+        }
+
+        function updateBetStatus(selectElement) {
+            let row = selectElement.parentElement.parentElement;
+            row.style.backgroundColor = selectElement.value === "won" ? "lightgreen" : selectElement.value === "lost" ? "lightcoral" : "white";
+        }
+    </script>
+</body>
+</html>
