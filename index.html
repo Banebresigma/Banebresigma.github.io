@@ -3,56 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kazino & Sportska Kladionica</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Betting System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .dark-mode-button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .betslip {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .bet-item {
+            margin-bottom: 15px;
+        }
+
+        .bet-item input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .bet-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .total {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .betslip.dark-mode {
+            background-color: #444;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode-button.dark-mode {
+            background-color: #fff;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Kazino & Sportska Kladionica</h1>
-        <p>Saldo: <span id="balance">10000</span> din</p>
-    </header>
+    <div class="container">
+        <div class="header">
+            <h1>Betting System</h1>
+            <button class="dark-mode-button" id="darkModeButton">Switch to Dark Mode</button>
+        </div>
 
-    <section class="sports-betting">
-        <h2>Sportska Kladionica</h2>
-        <table>
-            <tr><th>Meč</th><th>1</th><th>X</th><th>2</th></tr>
-            <tr>
-                <td>Real Madrid - Barcelona</td>
-                <td><button onclick="addToBetslip('Real Madrid - Barcelona', 'Real Madrid', 2.50)">2.50</button></td>
-                <td><button onclick="addToBetslip('Real Madrid - Barcelona', 'Nerešeno', 3.10)">3.10</button></td>
-                <td><button onclick="addToBetslip('Real Madrid - Barcelona', 'Barcelona', 2.70)">2.70</button></td>
-            </tr>
-            <tr>
-                <td>Partizan - Zvezda</td>
-                <td><button onclick="addToBetslip('Partizan - Zvezda', 'Partizan', 2.30)">2.30</button></td>
-                <td><button onclick="addToBetslip('Partizan - Zvezda', 'Nerešeno', 3.20)">3.20</button></td>
-                <td><button onclick="addToBetslip('Partizan - Zvezda', 'Zvezda', 2.60)">2.60</button></td>
-            </tr>
-        </table>
-    </section>
+        <div class="betslip">
+            <div class="bet-item">
+                <label for="betAmount">Enter Bet Amount:</label>
+                <input type="number" id="betAmount" placeholder="Amount">
+            </div>
+            <div class="bet-item">
+                <label for="betOdds">Enter Bet Odds:</label>
+                <input type="number" id="betOdds" placeholder="Odds">
+            </div>
+            <div class="total">
+                <p>Total Potential Winnings: <span id="totalWinnings">0</span></p>
+            </div>
+        </div>
+    </div>
 
-    <section class="betslip">
-        <h2>BetSlip</h2>
-        <table id="betslip">
-            <tr><th>Meč</th><th>Tip</th><th>Kvota</th><th>Ukloni</th></tr>
-        </table>
-        <p>Ukupna kvota: <span id="totalOdds">1.00</span></p>
-        <label for="betAmount">Ulog (din):</label>
-        <input type="number" id="betAmount" min="1" value="100" oninput="updatePotentialWinnings()">
-        <p>Mogući dobitak: <span id="potentialWinnings">0</span> din</p>
-        <button onclick="placeBet()">Potvrdi tiket</button>
-    </section>
+    <script>
+        // Toggle Dark Mode
+        const darkModeButton = document.getElementById('darkModeButton');
+        darkModeButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            document.querySelector('.betslip').classList.toggle('dark-mode');
+            darkModeButton.classList.toggle('dark-mode');
+            darkModeButton.textContent = document.body.classList.contains('dark-mode') ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        });
 
-    <section class="history">
-        <h2>Moje Opklade</h2>
-        <table id="betHistory">
-            <tr><th>Ulog</th><th>Mečevi</th><th>Status</th></tr>
-        </table>
-    </section>
+        // Calculate Winnings
+        const betAmountInput = document.getElementById('betAmount');
+        const betOddsInput = document.getElementById('betOdds');
+        const totalWinningsElement = document.getElementById('totalWinnings');
 
-    <!-- Dark Mode Toggle Button -->
-    <button id="darkModeToggle" onclick="toggleDarkMode()">🌙</button>
+        betAmountInput.addEventListener('input', calculateWinnings);
+        betOddsInput.addEventListener('input', calculateWinnings);
 
-    <script src="script.js"></script>
+        function calculateWinnings() {
+            const betAmount = parseFloat(betAmountInput.value) || 0;
+            const betOdds = parseFloat(betOddsInput.value) || 0;
+            const totalWinnings = betAmount * betOdds;
+            totalWinningsElement.textContent = totalWinnings.toFixed(2);
+        }
+    </script>
 </body>
 </html>
