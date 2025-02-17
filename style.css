@@ -1,36 +1,110 @@
-/* Ovo je primer stila za tvoju stranicu */
-
+/* General styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
     margin: 0;
     padding: 0;
+    background-color: #121212; /* Dark background */
+    color: #eaeaea; /* Light text */
+    transition: background-color 0.3s, color 0.3s;
 }
 
-h1, h2, h3 {
-    color: #007BFF;
-}
-
-.container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.header {
-    background-color: #4CAF50;
+header {
+    background-color: #333; /* Dark header */
     color: white;
-    padding: 15px;
+    padding: 10px 20px;
     text-align: center;
 }
 
-footer {
-    background-color: #333;
-    color: white;
+h1, h2 {
+    margin: 10px 0;
+}
+
+section {
+    padding: 20px;
+    margin: 10px;
+    background-color: #1e1e1e; /* Dark sections */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+th, td {
     padding: 10px;
     text-align: center;
+    border: 1px solid #444; /* Dark borders */
+}
+
+th {
+    background-color: #444; /* Dark header in table */
+    color: white;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+input[type="number"], select {
+    padding: 8px;
+    width: 100px;
+    border: 1px solid #444;
+    border-radius: 5px;
+}
+
+/* Bet history */
+#betHistory tr td {
+    text-align: center;
+}
+
+/* Styles for status selection */
+option[value="pending"] {
+    color: gray;
+}
+
+option[value="won"] {
+    color: green;
+}
+
+option[value="lost"] {
+    color: red;
+}
+
+/* Dark mode toggle button */
+#darkModeToggle {
     position: fixed;
-    width: 100%;
-    bottom: 0;
+    top: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+#darkModeToggle:hover {
+    background-color: #555;
+}
+
+/* Hover effects */
+button, select, input[type="number"] {
+    transition: all 0.3s ease;
+}
+
+button:hover, select:hover, input[type="number"]:hover {
+    transform: scale(1.05);
 }
