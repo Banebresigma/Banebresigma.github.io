@@ -3,133 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Betting System</title>
+    <title>Kazino & Sportska Kladionica</title>
     <style>
+        /* General styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #121212;
+            color: #eaeaea;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-        }
-
-        .dark-mode-button {
-            padding: 10px 20px;
+        header {
             background-color: #333;
             color: white;
-            border: none;
-            cursor: pointer;
+            padding: 10px 20px;
+            text-align: center;
         }
 
-        .betslip {
-            margin-top: 30px;
-            background-color: #fff;
+        h1, h2 {
+            margin: 10px 0;
+        }
+
+        section {
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
-        .bet-item {
-            margin-bottom: 15px;
-        }
-
-        .bet-item input {
+        table {
             width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        th, td {
             padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
+            text-align: center;
+            border: 1px solid #444;
+        }
+
+        th {
+            background-color: #444;
+            color: white;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
             border-radius: 5px;
         }
 
-        .bet-item label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+        button:hover {
+            background-color: #45a049;
         }
 
-        .total {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
+        input[type="number"], select {
+            padding: 8px;
+            width: 100px;
+            border: 1px solid #444;
+            border-radius: 5px;
         }
 
-        /* Dark Mode Styles */
-        body.dark-mode {
-            background-color: #333;
-            color: #fff;
+        #betHistory tr td {
+            text-align: center;
         }
 
-        .betslip.dark-mode {
-            background-color: #444;
-            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        option[value="pending"] {
+            color: gray;
         }
 
-        .dark-mode-button.dark-mode {
-            background-color: #fff;
-            color: #333;
+        option[value="won"] {
+            color: green;
+        }
+
+        option[value="lost"] {
+            color: red;
+        }
+
+        /* Hover effects */
+        button, select, input[type="number"] {
+            transition: all 0.3s ease;
+        }
+
+        button:hover, select:hover, input[type="number"]:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Betting System</h1>
-            <button class="dark-mode-button" id="darkModeButton">Switch to Dark Mode</button>
-        </div>
+    <header>
+        <h1>Kazino & Sportska Kladionica</h1>
+        <p>Saldo: <span id="balance">10000</span> RSD</p>
+    </header>
 
-        <div class="betslip">
-            <div class="bet-item">
-                <label for="betAmount">Enter Bet Amount:</label>
-                <input type="number" id="betAmount" placeholder="Amount">
-            </div>
-            <div class="bet-item">
-                <label for="betOdds">Enter Bet Odds:</label>
-                <input type="number" id="betOdds" placeholder="Odds">
-            </div>
-            <div class="total">
-                <p>Total Potential Winnings: <span id="totalWinnings">0</span></p>
-            </div>
-        </div>
-    </div>
+    <section>
+        <h2>Opklade</h2>
+        <form id="betForm">
+            <label for="amount">Iznos opklade (RSD):</label>
+            <input type="number" id="amount" name="amount" min="1" required><br><br>
+
+            <label for="betType">Vrsta opklade:</label>
+            <select id="betType" name="betType">
+                <option value="win">Pobeda</option>
+                <option value="lose">Poraz</option>
+                <option value="draw">Nereseno</option>
+            </select><br><br>
+
+            <button type="submit">Postavi opkladu</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Istorija opklada</h2>
+        <table id="betHistory">
+            <thead>
+                <tr>
+                    <th>Iznos</th>
+                    <th>Vrsta</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Bet history rows will go here -->
+            </tbody>
+        </table>
+    </section>
 
     <script>
-        // Toggle Dark Mode
-        const darkModeButton = document.getElementById('darkModeButton');
-        darkModeButton.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            document.querySelector('.betslip').classList.toggle('dark-mode');
-            darkModeButton.classList.toggle('dark-mode');
-            darkModeButton.textContent = document.body.classList.contains('dark-mode') ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        // JavaScript code for managing bets
+        let balance = 10000;
+        const balanceElement = document.getElementById('balance');
+        const betForm = document.getElementById('betForm');
+        const betHistoryTable = document.getElementById('betHistory').getElementsByTagName('tbody')[0];
+
+        // Event listener for form submission
+        betForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission (page reload)
+
+            const amount = parseInt(document.getElementById('amount').value);
+            const betType = document.getElementById('betType').value;
+
+            if (amount > balance) {
+                alert("Nemate dovoljno sredstava za ovu opkladu.");
+                return;
+            }
+
+            // Deduct the bet amount from the balance
+            balance -= amount;
+            balanceElement.textContent = balance;
+
+            // Determine bet outcome
+            const betStatus = (betType === "win") ? "won" : (betType === "lose") ? "lost" : "pending";
+
+            // Add new bet to history table
+            const newRow = betHistoryTable.insertRow();
+            newRow.innerHTML = `
+                <td>${amount}</td>
+                <td>${betType}</td>
+                <td>
+                    <select>
+                        <option value="pending" ${betStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="won" ${betStatus === 'won' ? 'selected' : ''}>Won</option>
+                        <option value="lost" ${betStatus === 'lost' ? 'selected' : ''}>Lost</option>
+                    </select>
+                </td>
+            `;
         });
-
-        // Calculate Winnings
-        const betAmountInput = document.getElementById('betAmount');
-        const betOddsInput = document.getElementById('betOdds');
-        const totalWinningsElement = document.getElementById('totalWinnings');
-
-        betAmountInput.addEventListener('input', calculateWinnings);
-        betOddsInput.addEventListener('input', calculateWinnings);
-
-        function calculateWinnings() {
-            const betAmount = parseFloat(betAmountInput.value) || 0;
-            const betOdds = parseFloat(betOddsInput.value) || 0;
-            const totalWinnings = betAmount * betOdds;
-            totalWinningsElement.textContent = totalWinnings.toFixed(2);
-        }
     </script>
 </body>
 </html>
